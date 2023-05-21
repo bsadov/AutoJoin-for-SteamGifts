@@ -2,7 +2,7 @@ let giveaways = [];
 let settingsInjected = false;
 let settings;
 let token;
-const thisVersion = 20230517;
+const thisVersion = 20230518;
 const currentState = {
   amountOfPoints: 0,
   set points(n) {
@@ -214,11 +214,14 @@ function modifyPageDOM(pageDOM, timeLoaded) {
       if (cost < settings.HideCostsBelow) giveaway.remove();
     }
 
+    const giveawayTimeEle = giveaway.querySelector('.giveaway__columns div:first-child');
+    const giveawayEnterable = !giveawayTimeEle.textContent.includes('Ended') && !giveawayTimeEle.textContent.includes('Begins');
+    
     if (giveawayInnerWrap.classList.contains('is-faded')) {
       if (settings.HideEntered) {
         giveaway.remove();
         return;
-      } else if (settings.ShowButtons) {
+      } else if (settings.ShowButtons && giveawayEnterable) { 
         const leaveBtn = document.createElement('input');
         leaveBtn.type = 'button';
         leaveBtn.value = 'Leave';
@@ -226,7 +229,7 @@ function modifyPageDOM(pageDOM, timeLoaded) {
         leaveBtn.setAttribute('walkState', 'leave');
         giveawayInnerWrap.appendChild(leaveBtn);
       }
-    } else if (settings.ShowButtons) {
+    } else if (settings.ShowButtons && giveawayEnterable) {
       const joinBtn = document.createElement('input');
       joinBtn.type = 'button';
       joinBtn.className = 'btnSingle';
